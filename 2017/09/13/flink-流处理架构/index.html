@@ -14,7 +14,7 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Xoln blog | 一个制造简单的技术博客
+          flink 流处理架构 - Xoln blog | 一个制造简单的技术博客
         
     </title>
 
@@ -69,7 +69,7 @@
 <style type="text/css">
     header.intro-header{
         
-            background-image: url('undefined')
+            background-image: url('home-bg-o.png')
             /*post*/
         
     }
@@ -86,9 +86,13 @@
                     <div class="post-heading">
                         <div class="tags">
                             
+                              <a class="tag" href="/tags/#Flink" title="Flink">Flink</a>
+                            
+                              <a class="tag" href="/tags/#Streaming" title="Streaming">Streaming</a>
+                            
                         </div>
-                        <h1></h1>
-                        <h2 class="subheading"></h2>
+                        <h1>flink 流处理架构</h1>
+                        <h2 class="subheading">flink中的流处理概念与要点</h2>
                         <span class="meta">
                             Posted by Xoln Ann on
                             2017-09-13
@@ -208,30 +212,16 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <hr>
-<p>title: flink 流处理架构<br>
-catalog: true<br>
-date: 2017-09-13T22:58:26.000Z<br>
-subtitle: flink中的流处理概念与要点<br>
-header-img: home-bg-o.png<br>
-tags:</p>
-<ul>
-<li>Flink</li>
-<li>Streaming<br>
-catagories:</li>
-<li>Flink</li>
-</ul>
-<hr>
-<p>流式处理常用概念</p>
+                <h1 id="流式处理常用概念">流式处理常用概念</h1>
 <p>1、watermark 水印：用于推进窗口处理中的钟的时间，指明当前已处于处理哪一部分数据的时间；一般生成于Source，也可以生成于Source之后；水印对于乱序数据，设置的时间一般都与它本身的时间无关，这样即使无法通过事件时间判断数据是否已全送达到窗口，水印也可以告诉窗口处理之前的一批数据已经全部到达窗口。<br>
 PS： 乱序数据如何处理迟到的数据，一般都是设置等待一定数量的迟到数据。</p>
-<p>(out-of-order.png)</p>
+<p><img src="out-of-order.png" alt="乱序数据"></p>
 <p>2、window 窗口：支持多种窗口，包括滚动窗口、滑动窗口、会话窗口、全局窗口；针对分组数据与未分组数据，支持窗口行为，前者以key分离并发，后者单一并发；支持不同数据处理场景的需求；<br>
 PS：比如统计五分钟时间段中的点击数；或者统计每隔1分钟，十分钟时间段的点击数；或者某一用户，在所有间隔不大于1分钟内的所有点击数；或者在某一页面下，当点击到某一标题文章时，之前已有的所有点击数。</p>
-<p>(window1.png)</p>
-<p>(window2.png)</p>
-<p>(window3.png)</p>
-<p>(window4.png)</p>
+<p><img src="window1.png" alt="滚动窗口"></p>
+<p><img src="window2.png" alt="滑动窗口"></p>
+<p><img src="window3.png" alt="会话窗口"></p>
+<p><img src="window4.png" alt="全局窗口"></p>
 <p>（1）为第一个属于窗口的元素创建窗口<br>
 （2）窗口由触发器与处理函数组成，trigger的条件决定何时调用function；窗口还有evitor，一般作用于触发器和处理函数前后，用于清理元素。<br>
 （3）当水印达到窗口的创建时间加延迟时间时，会清理窗口的元素</p>
@@ -240,52 +230,52 @@ PS：比如统计五分钟时间段中的点击数；或者统计每隔1分钟�
 <p>5、operator 操作：与输入输出绑定，或者应用一个或多个输入产生结果。<br>
 针对streaming与batch有不同的操作父类：<br>
 streaming的operator将在process里直接调用</p>
-<p>(code1.png)</p>
-<p>(code2.png)</p>
+<p><img src="code1.png" alt="源代码"></p>
+<p><img src="code2.png" alt="源代码"></p>
 <p>batch的operator将由translation从api转换到core的operator</p>
-<p>(code3.png)</p>
-<p>(code4.png)</p>
-<p>(code5.png)</p>
+<p><img src="code3.png" alt="源代码"></p>
+<p><img src="code4.png" alt="源代码"></p>
+<p><img src="code5.png" alt="源代码"></p>
 <p>6、function 函数：用户定义的内容</p>
-<p>(code6.png)</p>
-<p>(code7.png)</p>
-<p>(code8.png)</p>
-<p>并发情况下的架构</p>
-<p>(watermark.png)</p>
-<p>窗口与事件时间的概念</p>
+<p><img src="code6.png" alt="源代码"></p>
+<p><img src="code7.png" alt="源代码"></p>
+<p><img src="code8.png" alt="源代码"></p>
+<h1 id="并发情况下的架构">并发情况下的架构</h1>
+<p><img src="watermark.png" alt="并发时的水印更新"></p>
+<h1 id="窗口与事件时间的概念">窗口与事件时间的概念</h1>
 <p>水印注入：TimestampsAndPeriodicWatermarksOperator和TimestampsAndPunctuatedWatermarksOperator这两个算子往事件流注入水印<br>
 （1）周期水印：<br>
-(watermark-code1.png)<br>
-（2）间断水印：<br>
-(watermark-code2.png)<br>
-（3）已实现水印示例：<br>
+<img src="watemark-code.png" alt="周期水印"></p>
+<p>（2）间断水印：<br>
+<img src="watemark-code2.png" alt="间断水印"></p>
+<p>（3）已实现水印示例：<br>
 1.升序时间戳 AscendingTimestampExtractor：时间戳只是在每个并发的source Task里升序；水印归并机制会自动在shuffle、unoin、connect或merge时生成正确的水印<br>
 2.允许混合一定量的迟到数据 BoundedOutOfOrdernessTimestampExtractor：产用户可预见迟到区间的数据。其参数maxOutOfOrderness，是在为给定窗口计算最终结果时，在要被忽略之前，数据可被允许迟到的最大时间。</p>
-<p>水印与窗口的关系<br>
-水印的时间决定了什么数据会被处理，主要作用于处理乱序、迟到的数据<br>
+<h1 id="水印与窗口的关系">水印与窗口的关系</h1>
+<p>水印的时间决定了什么数据会被处理，主要作用于处理乱序、迟到的数据<br>
 窗口的时间决定了什么时候对窗口内的一批数据进行处理。窗口的消亡取决于window End-Time</p>
-<p>stream connector：连接器<br>
-（1）Hdfs ： Bucketsink，输出目录/path/{date-time}/part-{paraller}-{attempt}，当文件大小达到bucket上限将roll，新创建一个文件。当第一个数据到达以后，已当前时间戳作为{date-time}创建目录。<br>
+<h1 id="stream-connector连接器">stream connector：连接器</h1>
+<p>（1）Hdfs ： Bucketsink，输出目录/path/{date-time}/part-{paraller}-{attempt}，当文件大小达到bucket上限将roll，新创建一个文件。当第一个数据到达以后，已当前时间戳作为{date-time}创建目录。<br>
 （2）Kafka：source、sink<br>
 （3）Canssandra: sink<br>
 （4）ES：sink<br>
 （5）RabbitMQ：source、sink<br>
 （6）NiFi：source、sink<br>
 （7）external：AcrtiveMQ(source、sink)、Flume(sink)、Redis(sink)、Akka(sink)、Netty(source)</p>
-<p>process function 低级别操作<br>
-可以实现ProcessFunction来完成功能。<br>
+<h1 id="process-function-低级别操作">process function 低级别操作</h1>
+<p>可以实现ProcessFunction来完成功能。<br>
 可以被认为是一个有着key状态和定时器的FlatMapFunction；<br>
 为了容错，提供了RuntimeConetxt中的state，和其他状态function一样的使用方式。<br>
 定时器允许应用在process\event time中产生变换。<br>
 调用processElement（）获取一个context，能访问元素的event-time时间戳。<br>
 TimerService能够为event/process time实例注册一个回调函数，当定时器到达，onTimer（）将会被调用。其中会包含一个这个定时器创建的，key值范围内的状态集合。定时器可以操作这个状态集合。<br>
 也可以使用CoProcessFunction去归并操作两个输入；分别调用ProcessElement1()、ProcessElement2()</p>
-<p>侧流输出<br>
-其实就是变相的多路输出。<br>
+<h1 id="侧流输出">侧流输出</h1>
+<p>其实就是变相的多路输出。<br>
 当要使用侧流输出，需要定义一个OutputTag用来识别侧边的输出流。<br>
 可以在ProcessFunction内指定Tag输出，也可以使用SingleOutputStreamOperator的getSideOutput（）方法获取侧边流，再进行操作或输出。</p>
-<p>工作状态<br>
-状态可存在于function与operator。他们通过元素或者事件的各自的处理过程，存储数据。能为任意种类的更多合成操作声明临界建立的区块。<br>
+<h1 id="工作状态">工作状态</h1>
+<p>状态可存在于function与operator。他们通过元素或者事件的各自的处理过程，存储数据。能为任意种类的更多合成操作声明临界建立的区块。<br>
 flink管理着应用的状态，意味着内存管理允许保存巨大的状态；为了状态支持容错，还需要对它做checkpoint。<br>
 以下为几大常用状态实现：<br>
 Keyed State：仅应用于KeyedStream的function和operator，可以认为其为被分区、分片的Operator State；每个Key都有精准的状态分区，逻辑关联&lt;parallel-operator-instance,key&gt;的这个唯一组合；每个key都属于keyed操作的并发实例的精确之一，还可以简单认为它是&lt;operator,key&gt;<br>
@@ -295,8 +285,8 @@ Operator State： 其实是non-keyed state，每一个operator state与一个并
 Raw State（元状态）：operator保持在他们自己的数据结构中的状态；当checkpoint后，他们会写一串二进制到checkpoint，flink无法知道状态内容只能看到二进制数据。<br>
 Managed State（管理状态）：是在runtime阶段被控制的数据结构；比如内部hash表，比如ValueState、ListState。runtime阶段编码states然后将它们写入检查点。<br>
 datastream可以使用管理状态，但元状态接口只能在实现了operator时被使用。建议使用使用管理状态，因为当并发数改变时，可以自动重新分发，并且能被更好的进行内存管理。</p>
-<p>检查点机制<br>
-为了工作状态的容错，需要引入检查点机制。检查点允许恢复流的状态和位置，保证应用等同无失败执行。<br>
+<h1 id="检查点机制">检查点机制</h1>
+<p>为了工作状态的容错，需要引入检查点机制。检查点允许恢复流的状态和位置，保证应用等同无失败执行。<br>
 要实现检查点机制，需要：<br>
 1、一个持久的数据源，能够在一定时间内重放记录。比如持久化的消息队列，或者文件系统。<br>
 2、一个持久化的状态存储，经典的比如分布式文件系统。<br>
@@ -346,6 +336,17 @@ datastream可以使用管理状态，但元状态接口只能在实现了operato
             <!-- Tabe of Content -->
             <!-- Table of Contents -->
 
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#流式处理常用概念"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">流式处理常用概念</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#并发情况下的架构"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">并发情况下的架构</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#窗口与事件时间的概念"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">窗口与事件时间的概念</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#水印与窗口的关系"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">水印与窗口的关系</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#stream-connector连接器"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">stream connector：连接器</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#process-function-低级别操作"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">process function 低级别操作</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#侧流输出"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">侧流输出</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#工作状态"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">工作状态</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#检查点机制"><span class="toc-nav-number">9.</span> <span class="toc-nav-text">检查点机制</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
                 
             <!-- Sidebar Container -->
             <div class="
@@ -360,6 +361,10 @@ datastream可以使用管理状态，但元状态接口只能在实现了operato
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
+                          <a class="tag" href="/tags/#Flink" title="Flink">Flink</a>
+                        
+                          <a class="tag" href="/tags/#Streaming" title="Streaming">Streaming</a>
+                        
                     </div>
                 </section>
                 

@@ -211,28 +211,15 @@
 
     <a href="/2017/09/13/flink-流处理架构/">
         <h2 class="post-title">
-            Untitled
+            flink 流处理架构
         </h2>
         <h3 class="post-subtitle">
-            
+            flink中的流处理概念与要点
         </h3>
         <div class="post-content-preview">
-            
-title: flink 流处理架构
-catalog: true
-date: 2017-09-13T22:58:26.000Z
-subtitle: flink中的流处理概念与要点
-header-img: home-bg-o.png
-tags:
-
-Flink
-Streaming
-catagories:
-Flink
-
-
-流式处理常用概念
-1、watermark 水印：用于推进窗口处理中的钟的时......
+            流式处理常用概念
+1、watermark 水印：用于推进窗口处理中的钟的时间，指明当前已处于处理哪一部分数据的时间；一般生成于Source，也可以生成于Source之后；水印对于乱序数据，设置的时间一般都与它本身的时间无关，这样即使无法通过事件时间判断数据是否已全送达到窗口，水印也可以告诉窗口处理之前的一批数据已经全部到达窗口。
+PS： 乱序数据如何处理迟到的数据，一般都是设置等待一定数量的......
         </div>
     </a>
     
@@ -241,6 +228,10 @@ Flink
             2017-09-13
         </p>
         <div class="tags">
+            
+              <a href="/tags/#Flink" title="Flink">Flink</a>
+            
+              <a href="/tags/#Streaming" title="Streaming">Streaming</a>
             
         </div>
     
@@ -353,7 +344,7 @@ Restart up the Blog, it’s feeling good!
     <ul>
       
         <li>
-          <a href="/2017/09/13/flink-流处理架构/">(no title)</a>
+          <a href="/2017/09/13/flink-流处理架构/">flink 流处理架构</a>
         </li>
       
         <li>
