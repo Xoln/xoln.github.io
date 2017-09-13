@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="幻想家">
+    <meta name="keyword"  content="hadoop,hive,flink">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Xoln blog | 一个制造简单的技术博客
+        
+    </title>
+
+    <link rel="canonical" href="http://xoln.github.io/2017/09/13/flink-流处理架构/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                        </div>
+                        <h1></h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Xoln Ann on
+                            2017-09-13
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Xoln blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">相关</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">归档</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">标签</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <hr>
+<p>title: flink 流处理架构<br>
+catalog: true<br>
+date: 2017-09-13T22:58:26.000Z<br>
+subtitle: flink中的流处理概念与要点<br>
+header-img: home-bg-o.png<br>
+tags:</p>
+<ul>
+<li>Flink</li>
+<li>Streaming<br>
+catagories:</li>
+<li>Flink</li>
+</ul>
+<hr>
+<p>流式处理常用概念</p>
+<p>1、watermark 水印：用于推进窗口处理中的钟的时间，指明当前已处于处理哪一部分数据的时间；一般生成于Source，也可以生成于Source之后；水印对于乱序数据，设置的时间一般都与它本身的时间无关，这样即使无法通过事件时间判断数据是否已全送达到窗口，水印也可以告诉窗口处理之前的一批数据已经全部到达窗口。<br>
+PS： 乱序数据如何处理迟到的数据，一般都是设置等待一定数量的迟到数据。</p>
+<p>(out-of-order.png)</p>
+<p>2、window 窗口：支持多种窗口，包括滚动窗口、滑动窗口、会话窗口、全局窗口；针对分组数据与未分组数据，支持窗口行为，前者以key分离并发，后者单一并发；支持不同数据处理场景的需求；<br>
+PS：比如统计五分钟时间段中的点击数；或者统计每隔1分钟，十分钟时间段的点击数；或者某一用户，在所有间隔不大于1分钟内的所有点击数；或者在某一页面下，当点击到某一标题文章时，之前已有的所有点击数。</p>
+<p>(window1.png)</p>
+<p>(window2.png)</p>
+<p>(window3.png)</p>
+<p>(window4.png)</p>
+<p>（1）为第一个属于窗口的元素创建窗口<br>
+（2）窗口由触发器与处理函数组成，trigger的条件决定何时调用function；窗口还有evitor，一般作用于触发器和处理函数前后，用于清理元素。<br>
+（3）当水印达到窗口的创建时间加延迟时间时，会清理窗口的元素</p>
+<p>3、Event Time ： 支持的时间场景，包括ProcessTime 处理时间、IngestionTime 提取时间、EventTime 事件时间；数据带有的时间戳分别是处理时赋值、数据进入flink时赋值、数据生成时赋值；<br>
+（1）source中可指定window assigner，继承的WindowAssigner是基于时间分配元素到窗口的</p>
+<p>5、operator 操作：与输入输出绑定，或者应用一个或多个输入产生结果。<br>
+针对streaming与batch有不同的操作父类：<br>
+streaming的operator将在process里直接调用</p>
+<p>(code1.png)</p>
+<p>(code2.png)</p>
+<p>batch的operator将由translation从api转换到core的operator</p>
+<p>(code3.png)</p>
+<p>(code4.png)</p>
+<p>(code5.png)</p>
+<p>6、function 函数：用户定义的内容</p>
+<p>(code6.png)</p>
+<p>(code7.png)</p>
+<p>(code8.png)</p>
+<p>并发情况下的架构</p>
+<p>(watermark.png)</p>
+<p>窗口与事件时间的概念</p>
+<p>水印注入：TimestampsAndPeriodicWatermarksOperator和TimestampsAndPunctuatedWatermarksOperator这两个算子往事件流注入水印<br>
+（1）周期水印：<br>
+(watermark-code1.png)<br>
+（2）间断水印：<br>
+(watermark-code2.png)<br>
+（3）已实现水印示例：<br>
+1.升序时间戳 AscendingTimestampExtractor：时间戳只是在每个并发的source Task里升序；水印归并机制会自动在shuffle、unoin、connect或merge时生成正确的水印<br>
+2.允许混合一定量的迟到数据 BoundedOutOfOrdernessTimestampExtractor：产用户可预见迟到区间的数据。其参数maxOutOfOrderness，是在为给定窗口计算最终结果时，在要被忽略之前，数据可被允许迟到的最大时间。</p>
+<p>水印与窗口的关系<br>
+水印的时间决定了什么数据会被处理，主要作用于处理乱序、迟到的数据<br>
+窗口的时间决定了什么时候对窗口内的一批数据进行处理。窗口的消亡取决于window End-Time</p>
+<p>stream connector：连接器<br>
+（1）Hdfs ： Bucketsink，输出目录/path/{date-time}/part-{paraller}-{attempt}，当文件大小达到bucket上限将roll，新创建一个文件。当第一个数据到达以后，已当前时间戳作为{date-time}创建目录。<br>
+（2）Kafka：source、sink<br>
+（3）Canssandra: sink<br>
+（4）ES：sink<br>
+（5）RabbitMQ：source、sink<br>
+（6）NiFi：source、sink<br>
+（7）external：AcrtiveMQ(source、sink)、Flume(sink)、Redis(sink)、Akka(sink)、Netty(source)</p>
+<p>process function 低级别操作<br>
+可以实现ProcessFunction来完成功能。<br>
+可以被认为是一个有着key状态和定时器的FlatMapFunction；<br>
+为了容错，提供了RuntimeConetxt中的state，和其他状态function一样的使用方式。<br>
+定时器允许应用在process\event time中产生变换。<br>
+调用processElement（）获取一个context，能访问元素的event-time时间戳。<br>
+TimerService能够为event/process time实例注册一个回调函数，当定时器到达，onTimer（）将会被调用。其中会包含一个这个定时器创建的，key值范围内的状态集合。定时器可以操作这个状态集合。<br>
+也可以使用CoProcessFunction去归并操作两个输入；分别调用ProcessElement1()、ProcessElement2()</p>
+<p>侧流输出<br>
+其实就是变相的多路输出。<br>
+当要使用侧流输出，需要定义一个OutputTag用来识别侧边的输出流。<br>
+可以在ProcessFunction内指定Tag输出，也可以使用SingleOutputStreamOperator的getSideOutput（）方法获取侧边流，再进行操作或输出。</p>
+<p>工作状态<br>
+状态可存在于function与operator。他们通过元素或者事件的各自的处理过程，存储数据。能为任意种类的更多合成操作声明临界建立的区块。<br>
+flink管理着应用的状态，意味着内存管理允许保存巨大的状态；为了状态支持容错，还需要对它做checkpoint。<br>
+以下为几大常用状态实现：<br>
+Keyed State：仅应用于KeyedStream的function和operator，可以认为其为被分区、分片的Operator State；每个Key都有精准的状态分区，逻辑关联&lt;parallel-operator-instance,key&gt;的这个唯一组合；每个key都属于keyed操作的并发实例的精确之一，还可以简单认为它是&lt;operator,key&gt;<br>
+Keyed State还会被组合成Key groups;它是原子的，所以可以被分发。Key groups的数据精确等于最大并发的数量，当每个并发运行的时候，key Operator可以通过一个或多个Key groups进行工作。<br>
+Operator State： 其实是non-keyed state，每一个operator state与一个并发的operator实例关联；当并发数改变时，也支持在并发operator实例之中重新分发状态。<br>
+比如使用Kafka，每个并发实例的消费者，都会维持一个topic分区的map与offset到operator state<br>
+Raw State（元状态）：operator保持在他们自己的数据结构中的状态；当checkpoint后，他们会写一串二进制到checkpoint，flink无法知道状态内容只能看到二进制数据。<br>
+Managed State（管理状态）：是在runtime阶段被控制的数据结构；比如内部hash表，比如ValueState、ListState。runtime阶段编码states然后将它们写入检查点。<br>
+datastream可以使用管理状态，但元状态接口只能在实现了operator时被使用。建议使用使用管理状态，因为当并发数改变时，可以自动重新分发，并且能被更好的进行内存管理。</p>
+<p>检查点机制<br>
+为了工作状态的容错，需要引入检查点机制。检查点允许恢复流的状态和位置，保证应用等同无失败执行。<br>
+要实现检查点机制，需要：<br>
+1、一个持久的数据源，能够在一定时间内重放记录。比如持久化的消息队列，或者文件系统。<br>
+2、一个持久化的状态存储，经典的比如分布式文件系统。<br>
+默认checkpoint是不可用的，可以调用StreamExecutionEnvironment.enableCheckPointing(n)，指定检查点的间隔毫秒。<br>
+别的检查点配置包括：<br>
+1、exactly-once 或者 at-least-once：精确一次适合更多的应用，至少一次适用于极小延迟（几毫秒）的应用。<br>
+2、检查点时间：多少时间之后检查点终止<br>
+3、两次检查点之间的最小时间：比两个检查点的间隔时间要更易设置，因为常常检查点会花费长于平均时间，比如目标存储系统的延迟。检查点之间的间隔时间决不会小于最小时间。<br>
+4、并发检查点的数量：默认系统当一个在进行时，不会触发另一个检查点；这个保证topology不会花费太多时间在检查点；这个允许多个覆盖的检查点，适用于如果有确切延迟的处理，比如请求外部服务，但是还想要比较频繁的检查点去重新处理很少的失败。<br>
+5、外部检查点：可以配置周期检查点，持久到外部。会写meta到可持久化的存储，在作业失败以后也不会自动清理。这个可以在你的作业失败后用于继续你的作业。<br>
+相关配置：<br>
+1、state.backend 状态后端：可以选用直接在JM的内存中存储，也可以选择文件系统。如果选择选择文件系统，需要设置一个JM可访问的fs路径。<br>
+2、state.checkpoint.dir：外部检查存储meta的路径<br>
+3、state.checkpoint.num-retained：完整检查点保存的个数。如果超过一个，如果最新的检查点失败了，能从早前的检查点进行恢复。</p>
+<p>迭代作业需要强制设置才能使用检查点机制：env.enableCheckpointing(interval, force = true).</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/07/18/hexo-theme-beantech/" data-toggle="tooltip" data-placement="top" title="[Hexo] Restart xoln blog">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://beantech.org" target="_blank">Bean Tech</a></li>
+                    
+                        <li><a href="https://harrisxh.github.io" target="_blank">Harrisxh&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "your-disqus-ID";
+    var disqus_identifier = "http://xoln.github.io/2017/09/13/flink-流处理架构/";
+    var disqus_url = "http://xoln.github.io/2017/09/13/flink-流处理架构/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Xoln">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Xoln Ann 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xoln.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://xoln.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

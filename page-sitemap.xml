@@ -7,6 +7,13 @@
     </url>
     
     <url>
+        <loc>http://xoln.github.io/about/</loc>
+        <lastmod>2017-07-23T11:50:21.737Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
         <loc>http://xoln.github.io/tags/</loc>
         <lastmod>2017-07-17T16:21:56.194Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -16,13 +23,6 @@
     <url>
         <loc>http://xoln.github.io/archive/</loc>
         <lastmod>2017-07-17T16:21:46.180Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <url>
-        <loc>http://xoln.github.io/about/</loc>
-        <lastmod>2017-07-17T16:21:30.161Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
