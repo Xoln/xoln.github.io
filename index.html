@@ -132,14 +132,14 @@
 
                         
                         <li>
-                            <a href="/about/">相关</a>
+                            <a href="/archive/">归档</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">归档</a>
+                            <a href="/about/">相关</a>
                         </li>
                         
                     
@@ -206,6 +206,183 @@
             
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2018/06/16/JAVA多线程编程/">
+        <h2 class="post-title">
+            JAVA多线程编程-capter1
+        </h2>
+        <h3 class="post-subtitle">
+            线程与锁的使用
+        </h3>
+        <div class="post-content-preview">
+            Thread相关接口
+
+start()
+sleep()
+yield()
+join()
+interrupt()
+stop()
+resume()
+suspend()
+
+in Object.class
+
+wait()
+notify()
+notifyAll()
+
+线程状态转换
+
+
+黑色代表线程状态
+绿色代表不存在状态
+黄色代表线程支持方法
+问号代表不确定状态
+
+锁
+用于实现多线程并发时同步的数据结构......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Xoln Ann on
+            2018-06-16
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Thread" title="Thread">Thread</a>
+            
+              <a href="/tags/#锁" title="锁">锁</a>
+            
+              <a href="/tags/#同步" title="同步">同步</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2018/06/16/数据仓库常用数据结构/">
+        <h2 class="post-title">
+            数据仓库常用数据结构
+        </h2>
+        <h3 class="post-subtitle">
+            查询、存储优化
+        </h3>
+        <div class="post-content-preview">
+            树结构
+平衡二叉树
+
+常用场景：内存内动态搜索某一数据
+
+
+常用实现：
+
+
+AVL树：严格保持平衡
+红黑树：删除后的旋转操作最多不超过3次
+
+
+B-tree
+
+常用场景：磁盘内搜索唯一性或重复性低的数据
+
+
+优化结构：
+
+
+B+Tree：所有Key存在叶节点，所有叶节点多一个链指针
+
+
+Trie树
+
+常用场景：对大量字符串统计、排序
+
+
+优化结构：
+
+
+Merkle Patricia Tre......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Xoln Ann on
+            2018-06-16
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Tree" title="Tree">Tree</a>
+            
+              <a href="/tags/#索引" title="索引">索引</a>
+            
+              <a href="/tags/#Hash" title="Hash">Hash</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2018/06/16/Hive查询引擎架构/">
+        <h2 class="post-title">
+            Hive 查询引擎架构
+        </h2>
+        <h3 class="post-subtitle">
+            分布式查询引擎架构
+        </h3>
+        <div class="post-content-preview">
+            整体流程
+结构转换
+
+
+
+解析
+
+从SQL语法解析为AST树
+
+常用库
+
+ANTLR
+SCALA Parse [SPARKSQL]
+
+分析
+
+阶段一：遍历AST树，将子查询转换为QB链，映射关键字转换为QB内的成员变量，并填入元数据信息
+阶段二：遍历QB的alias字段，对应转换为逻辑Operator
+
+逻辑计划优化
+
+根据基于规则的优化器，对逻辑OperatorTree进行优化
+
+常见优化......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Xoln Ann on
+            2018-06-16
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hive" title="Hive">Hive</a>
+            
+              <a href="/tags/#分布式" title="分布式">分布式</a>
+            
+              <a href="/tags/#查询引擎" title="查询引擎">查询引擎</a>
+            
+        </div>
+    
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -344,6 +521,18 @@ Restart up the Blog, it’s feeling good!
     <ul>
       
         <li>
+          <a href="/2018/06/16/JAVA多线程编程/">JAVA多线程编程-capter1</a>
+        </li>
+      
+        <li>
+          <a href="/2018/06/16/数据仓库常用数据结构/">数据仓库常用数据结构</a>
+        </li>
+      
+        <li>
+          <a href="/2018/06/16/Hive查询引擎架构/">Hive 查询引擎架构</a>
+        </li>
+      
+        <li>
           <a href="/2017/09/13/flink-流处理架构/">flink 流处理架构</a>
         </li>
       
@@ -407,7 +596,7 @@ Restart up the Blog, it’s feeling good!
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Xoln Ann 2017 
+                    Copyright &copy; Xoln Ann 2018 
                     <br>
                     Theme by <a href="http://huangxuan.me">Hux</a> 
                     <span style="display: inline-block; margin: 0 5px;">

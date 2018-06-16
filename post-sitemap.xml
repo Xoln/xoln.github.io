@@ -7,6 +7,30 @@
     </url>
 
     <url>
+        <loc>http://xoln.github.io/2018/06/16/JAVA%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/</loc>
+        <lastmod>2018-06-16T10:17:11.017Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://xoln.github.io/2018/06/16/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
+        <lastmod>2018-06-16T09:33:18.749Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://xoln.github.io/2018/06/16/Hive%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E%E6%9E%B6%E6%9E%84/</loc>
+        <lastmod>2018-06-16T09:28:33.366Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://xoln.github.io/2017/09/13/flink-%E6%B5%81%E5%A4%84%E7%90%86%E6%9E%B6%E6%9E%84/</loc>
         <lastmod>2017-09-13T15:27:31.225Z</lastmod>
         <changefreq>weekly</changefreq>
